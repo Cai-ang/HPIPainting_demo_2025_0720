@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fa20422daf9445645bb47c742eb13da8
+timeCreated: 1427399172
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 33506
+  packageName: RealTime Painting
+  packageVersion: 1.0
+  assetPath: Assets/Resources/TexturePainter ( Place Me Out of Resources)/ReadMe.txt
+  uploadId: 57593

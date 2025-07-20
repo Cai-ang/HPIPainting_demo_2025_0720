@@ -1,0 +1,19 @@
+{
+    "name": "Oculus.Interaction",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:f64c9ebcd7899c3448a08dc9f9ddbe30",
+        "GUID:462e364dec746584790df7dee2014d44",
+        "GUID:3da6b6bfe90ff3449a2817d8a8ef8a7e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

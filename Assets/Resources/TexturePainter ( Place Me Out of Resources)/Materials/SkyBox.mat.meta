@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 50bb1c8f084f4af40ba277095da3a844
+timeCreated: 1427111798
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 33506
+  packageName: RealTime Painting
+  packageVersion: 1.0
+  assetPath: Assets/Resources/TexturePainter ( Place Me Out of Resources)/Materials/SkyBox.mat
+  uploadId: 57593

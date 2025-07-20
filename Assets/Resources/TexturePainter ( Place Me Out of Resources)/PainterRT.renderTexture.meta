@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1dd5c06a4ccfb6e4c8067820f3f0e29b
+timeCreated: 1427112129
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 33506
+  packageName: RealTime Painting
+  packageVersion: 1.0
+  assetPath: Assets/Resources/TexturePainter ( Place Me Out of Resources)/PainterRT.renderTexture
+  uploadId: 57593

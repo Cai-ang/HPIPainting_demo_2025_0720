@@ -1,0 +1,144 @@
+﻿#pragma kernel CSComputeNewVertices2x2x2
+#pragma kernel CSComputeNewVertices3x3x3
+#pragma kernel CSComputeNewVertices4x4x4
+#pragma kernel CSRecalculateNormal
+
+#define THREAD_X 32
+
+StructuredBuffer<int> gVerticesIndex;
+StructuredBuffer<float3> gControlPoints;
+StructuredBuffer<float3> gVerticesSTUs;
+RWStructuredBuffer<float3> gNewPoints;
+
+cbuffer cbParameter
+{
+	int3 gDispatch = int3(3, 3, 3);
+};
+
+int Map3DCoordTo1DCoord(int3 count_3, int3 id_3)
+{
+	return count_3.x * count_3.y * id_3.z + count_3.x * id_3.y + id_3.x;
+}
+
+// 阶乘
+float Factorial(int n)
+{
+        int m = 1;
+        if (n != 0 && n != 1)
+        {
+            m = n;
+            while (n > 1)
+            {
+                n--;
+                m *= n;
+            }
+        }
+        return m;
+}
+//bernstein基函数
+float BernsteinFunc(int i, int j, float s)
+{
+	return Factorial(j) / (Factorial(i) * Factorial(j - i)) * pow(s, i) * pow(1 - s, j - i);
+}
+
+[numthreads(THREAD_X, 1, 1)]
+void CSComputeNewVertices2x2x2(int3 dispatchTreadID : SV_DispatchThreadID)
+{
+	int verticesIndex = gVerticesIndex[dispatchTreadID.x];
+	float3 stu = gVerticesSTUs[verticesIndex];
+	float3 sum = float3(0, 0, 0);
+	[unroll]
+	for (int i = 0; i < 2; i++)
+	{
+		[unroll]
+		for (int j = 0; j < 2; j++)
+		{
+			[unroll]
+			for (int k = 0; k < 2; k++)
+			{
+				sum += (BernsteinFunc(i, 1, stu.x) * BernsteinFunc(j, 1, stu.y) * BernsteinFunc(k, 1, stu.z) * gControlPoints[i * 4 + 2 * j + k]);
+			}
+		}
+	}
+	gNewPoints[verticesIndex] = sum;
+}
+
+[numthreads(THREAD_X, 1, 1)]
+void CSComputeNewVertices3x3x3(int3 dispatchTreadID : SV_DispatchThreadID)
+{
+	int verticesIndex = gVerticesIndex[dispatchTreadID.x];
+	float3 stu = gVerticesSTUs[verticesIndex];
+	float3 sum = float3(0, 0, 0);
+	[unroll]
+	for (int i = 0; i < 3; i++)
+	{
+		[unroll]
+		for (int j = 0; j < 3; j++)
+		{
+			[unroll]
+			for (int k = 0; k < 3; k++)
+			{
+				sum += (BernsteinFunc(i, 2, stu.x) * BernsteinFunc(j, 2, stu.y) * BernsteinFunc(k, 2, stu.z) * gControlPoints[i * 9 + 3 * j + k]);
+			}
+		}
+	}
+	gNewPoints[verticesIndex] = sum;
+}
+
+[numthreads(THREAD_X, 1, 1)]
+void CSComputeNewVertices4x4x4(int3 dispatchTreadID : SV_DispatchThreadID)
+{
+	int verticesIndex = gVerticesIndex[dispatchTreadID.x];
+	float3 stu = gVerticesSTUs[verticesIndex];
+	float3 sum = float3(0, 0, 0);
+	[unroll]
+	for (int i = 0; i < 4; i++)
+	{
+		[unroll]
+		for (int j = 0; j < 4; j++)
+		{
+			[unroll]
+			for (int k = 0; k < 4; k++)
+			{
+				sum += (BernsteinFunc(i, 3, stu.x) * BernsteinFunc(j, 3, stu.y) * BernsteinFunc(k, 3, stu.z) * gControlPoints[i * 16 + 4 * j + k]);
+			}
+		}
+	}
+	gNewPoints[verticesIndex] = sum;
+}
+
+struct VerticesAdjFaces
+{
+   int3 triangleID[6];
+};
+
+StructuredBuffer<VerticesAdjFaces> gVerticesAdjFaces;
+StructuredBuffer<float3> gVertices;
+RWStructuredBuffer<float3> gNormals;
+
+groupshared float3 gTriNormalCache[6];
+
+[numthreads(6, 1, 1)]
+void CSRecalculateNormal(int3 groupID : SV_GroupID, int groupIndex : SV_GroupIndex)
+{
+	int verticesIndex = gVerticesIndex[Map3DCoordTo1DCoord(gDispatch, groupID)];
+	 VerticesAdjFaces triAdjFaces = gVerticesAdjFaces[verticesIndex];
+	 float3 normal = float3(0,0,0);
+	 int3 triangleID = triAdjFaces.triangleID[groupIndex];
+	 if (triangleID.x != -1)
+	 {
+		 float3 vec0 = gVertices[triangleID.y] - gVertices[triangleID.x];
+		 float3 vec1 = gVertices[triangleID.z] - gVertices[triangleID.x];
+		 normal = cross(vec0, vec1);
+	 }
+	 gTriNormalCache[groupIndex] = normal;
+	 GroupMemoryBarrierWithGroupSync();
+	 float3 sumNormal = float3(0, 0, 0);
+	 for (int i = 0; i < 6; i++)
+	 {
+		 sumNormal += gTriNormalCache[i];
+	 }
+	 gNormals[verticesIndex] = normalize(sumNormal);
+}
+
+

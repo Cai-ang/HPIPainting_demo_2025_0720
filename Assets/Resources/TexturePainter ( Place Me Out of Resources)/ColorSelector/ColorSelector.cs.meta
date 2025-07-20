@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 18a39294c5bc61646be12faf6a17fe94
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 33506
+  packageName: RealTime Painting
+  packageVersion: 1.0
+  assetPath: Assets/Resources/TexturePainter ( Place Me Out of Resources)/ColorSelector/ColorSelector.cs
+  uploadId: 57593
